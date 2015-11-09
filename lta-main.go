@@ -11,11 +11,13 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 )
 
 import (
 	"github.com/voxelbrain/goptions"
+	"gopkg.in/yaml.v2"
 )
 
 //	"os"
@@ -26,7 +28,37 @@ func check(e error) {
 	}
 }
 
+////////////////////////////////////////////////////////////////////////////
+// Config
+
+/*
+dbuser: uu
+dbpassword: "pp"
+
+pod:
+
+ - id: v746b
+
+   instance:
+
+    - database: perfwhit746
+      dbserver: TorsvPerfDb07
+      servers: TorsvPerfBje05 TorsvPerfBje06 TorsvPerfApp03 TorsvPerfApp06
+
+    - database: perfwhit746b
+      dbserver: TorsvPerfDb07
+      servers: TorsvPerfBje05 TorsvPerfBje06 TorsvPerfApp03 TorsvPerfApp06
+
+*/
+var config map[interface{}]interface{}
+
+////////////////////////////////////////////////////////////////////////////
+// Commandline option definitions
+
 type Options struct {
+	ConfigExt  string `goptions:"--cfe, description='Config File Extension, extension for the config file\n\t\t\t\tDefault config file will be Args[0] plus this extension\n\t\t\t\t'"`
+	ConfigFile string `goptions:"--cfn, description='Config File Name, the alternative config file to use\n\t\t\t\tinstead of the default one, with extension\n'"`
+
 	Server string `goptions:"--cs, description='Connection Server, Server of PerfCounter info from\n\t\t\t\tDefault: local machine'"`
 
 	PerfDb string `goptions:"--cd, description='Connection DB, DB that holds the PerfCounter info\n\t\t\t\t'"`
@@ -47,8 +79,9 @@ type Options struct {
 }
 
 var options = Options{ // Default values goes here
-	Server: "(local)",
-	PerfDb: "LoadTest2010",
+	ConfigExt: ".conf",
+	Server:    "(local)",
+	PerfDb:    "LoadTest2010",
 }
 
 type Command func(Options) error
@@ -61,6 +94,9 @@ var (
 	VERBOSITY = 0
 )
 
+////////////////////////////////////////////////////////////////////////////
+// Main
+
 func main() {
 	goptions.ParseAndFail(&options)
 	//fmt.Printf("] %#v\r\n", options)
@@ -72,12 +108,19 @@ func main() {
 
 	VERBOSITY = len(options.Verbosity)
 
+	if len(options.ConfigFile) == 0 {
+		options.ConfigFile = os.Args[0] + options.ConfigExt
+	}
+	fmt.Printf("] %#v\r\n", options.ConfigFile)
+
+	cfgStr, err := ioutil.ReadFile(options.ConfigFile)
+	err = yaml.Unmarshal(cfgStr, &config)
+	check(err)
+	fmt.Printf("] %#v\r\n", config)
+
 	if cmd, found := commands[options.Verbs]; found {
-		err := cmd(options)
-		if err != nil {
-			fmt.Println("error:", err)
-			os.Exit(1)
-		}
+		err = cmd(options)
+		check(err)
 	}
 }
 
