@@ -10,7 +10,6 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 )
@@ -111,12 +110,11 @@ func main() {
 	if len(options.ConfigFile) == 0 {
 		options.ConfigFile = os.Args[0] + options.ConfigExt
 	}
-	fmt.Printf("] %#v\r\n", options.ConfigFile)
 
 	cfgStr, err := ioutil.ReadFile(options.ConfigFile)
 	err = yaml.Unmarshal(cfgStr, &config)
 	check(err)
-	fmt.Printf("] %#v\r\n", config)
+	//fmt.Printf("] %#v\r\n", config)
 
 	if cmd, found := commands[options.Verbs]; found {
 		err = cmd(options)
