@@ -1,15 +1,18 @@
 ////////////////////////////////////////////////////////////////////////////
 // Porgram: cmd_cgl - Config Group List sub-command handling
-// authors: Antonio Sun (c) 2015, All rights reserved
+// Authors: Antonio Sun (c) 2015, All rights reserved
 ////////////////////////////////////////////////////////////////////////////
 
 package main
 
+import "fmt"
+
 func cmd_cgl(options Options) error {
-	/*
-		for _, pod := range config["pod"] {
-			fmt.Printf("ID: %s\r\n", pod["id"])
+	for _, pods := range config.Pod {
+		fmt.Printf("ID: %s\r\n", pods.Id)
+		for _, inst := range pods.Instance {
+			fmt.Printf("  DB: %s\r\n", inst.Database)
 		}
-	*/
+	}
 	return nil
 }
