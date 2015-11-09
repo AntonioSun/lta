@@ -9,47 +9,15 @@
 
 package main
 
-import (
-	"io/ioutil"
-	"os"
-)
+import "os"
 
-import (
-	"github.com/voxelbrain/goptions"
-	"gopkg.in/yaml.v2"
-)
-
-//	"os"
+import "github.com/voxelbrain/goptions"
 
 func check(e error) {
 	if e != nil {
 		panic(e)
 	}
 }
-
-////////////////////////////////////////////////////////////////////////////
-// Config
-
-/*
-dbuser: uu
-dbpassword: "pp"
-
-pod:
-
- - id: v746b
-
-   instance:
-
-    - database: perfwhit746
-      dbserver: TorsvPerfDb07
-      servers: TorsvPerfBje05 TorsvPerfBje06 TorsvPerfApp03 TorsvPerfApp06
-
-    - database: perfwhit746b
-      dbserver: TorsvPerfDb07
-      servers: TorsvPerfBje05 TorsvPerfBje06 TorsvPerfApp03 TorsvPerfApp06
-
-*/
-var config map[interface{}]interface{}
 
 ////////////////////////////////////////////////////////////////////////////
 // Commandline option definitions
@@ -111,17 +79,10 @@ func main() {
 		options.ConfigFile = os.Args[0] + options.ConfigExt
 	}
 
-	cfgStr, err := ioutil.ReadFile(options.ConfigFile)
-	err = yaml.Unmarshal(cfgStr, &config)
-	check(err)
-	//fmt.Printf("] %#v\r\n", config)
+	configGet(options.ConfigFile)
 
 	if cmd, found := commands[options.Verbs]; found {
-		err = cmd(options)
+		err := cmd(options)
 		check(err)
 	}
-}
-
-func cmd_cgl(options Options) error {
-	return nil
 }
