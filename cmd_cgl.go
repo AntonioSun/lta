@@ -9,9 +9,9 @@ import "fmt"
 
 func cmd_cgl(options Options) error {
 	for _, pods := range config.Pod {
-		fmt.Printf("ID: %s\r\n", pods.Id)
+		fmt.Printf("%s:\r\n", pods.Id)
 		for _, inst := range pods.Instance {
-			fmt.Printf("  DB: %s\r\n", inst.Database)
+			fmt.Printf("  %s\r\n", inst.Database)
 		}
 	}
 	return nil

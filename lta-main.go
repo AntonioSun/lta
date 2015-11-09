@@ -75,11 +75,7 @@ func main() {
 
 	VERBOSITY = len(options.Verbosity)
 
-	if len(options.ConfigFile) == 0 {
-		options.ConfigFile = os.Args[0] + options.ConfigExt
-	}
-
-	configGet(options.ConfigFile)
+	configGet(os.Args[0])
 
 	if cmd, found := commands[options.Verbs]; found {
 		err := cmd(options)

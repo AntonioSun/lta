@@ -54,7 +54,11 @@ var config struct {
 ////////////////////////////////////////////////////////////////////////////
 // Function definitions
 
-func configGet(configFile string) {
+func configGet(args0 string) {
+	if len(options.ConfigFile) == 0 {
+		options.ConfigFile = args0[:len(args0)-4] + options.ConfigExt
+	}
+
 	cfgStr, err := ioutil.ReadFile(options.ConfigFile)
 	err = yaml.Unmarshal(cfgStr, &config)
 	check(err)
