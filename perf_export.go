@@ -33,19 +33,6 @@ func PerfCounterExport(options Options, ltRunId int, machineNameFilter string, p
 	defer conn.Close()
 	log.Printf("[%s] Program started\n", progname)
 
-	if 1 == 1 {
-		// No Loadtest specified. Use Max RunId.
-		runId, err := table.Get(conn,
-			"SELECT MAX(LoadTestRunId) AS RunId from LoadTestRun")
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		maxRunId := runId.MustGetScaler(0, "RunId")
-		fLoadTestRunId := int(maxRunId.(int32))
-		log.Printf("[%s] RunId : %d, %d\n", progname, ltRunId, fLoadTestRunId)
-	}
-
 	// get TraceName according to LoadTestRunId
 	r, err := table.Get(conn,
 		"SELECT TraceName from LoadTestRun WHERE LoadTestRunId = ?", ltRunId)
@@ -92,14 +79,9 @@ func PerfCounterExport(options Options, ltRunId int, machineNameFilter string, p
 		log.Fatal(err)
 	}
 
-	for i, machine := range machines.Rows {
+	for _, machine := range machines.Rows {
 		// machine.MustGet("MachineName").(string)
 		machineName := U8ToGoString(machine.MustGet("MachineName").([]uint8))
-		if i == 0 {
-			log.Printf("[%s]   (Controller %s skipped)\n",
-				progname, machineName)
-			continue
-		}
 		savePerfmonAsCsv(options.NoClobber, conn, machineName, ltRunId, resultFilePre)
 	}
 
@@ -132,7 +114,7 @@ func getConnectionString(options Options) string {
 	} else {
 		c = options.SqlConnectionString
 	}
-	log.Println("Connection string: " + c)
+	//log.Println("Connection string: " + c)
 	return c
 }
 
