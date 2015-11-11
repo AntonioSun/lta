@@ -5,7 +5,10 @@
 
 package main
 
-import "io/ioutil"
+import (
+	"io/ioutil"
+	"strings"
+)
 
 import (
 	"gopkg.in/yaml.v2"
@@ -56,11 +59,19 @@ var config struct {
 
 func configGet(args0 string) {
 	if len(options.ConfigFile) == 0 {
-		options.ConfigFile = args0[:len(args0)-4] + options.ConfigExt
+		options.ConfigFile = Basename(args0) + options.ConfigExt
 	}
 
 	cfgStr, err := ioutil.ReadFile(options.ConfigFile)
 	err = yaml.Unmarshal(cfgStr, &config)
 	check(err)
 	//fmt.Printf("] %#v\r\n", config)
+}
+
+func Basename(s string) string {
+	n := strings.LastIndexByte(s, '.')
+	if n > 0 {
+		return s[:n]
+	}
+	return s
 }

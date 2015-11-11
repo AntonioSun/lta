@@ -32,29 +32,38 @@ type Options struct {
 
 	SqlConnectionString string `goptions:"--conn, description='ConnectionString of Go MSSQL Odbc to MS SQL Server\n\t\t\t\tTo override the above --cs/cd setting. Sample:\n\t\t\t\tdriver=sql server;server=(local);database=LoadTest2010;uid=user;pwd=pass\n'"`
 
-	Verbosity []bool        "goptions:\"-v, --verbose, description='Be verbose'\""
-	Help      goptions.Help `goptions:"-h, --help, description='Show this help\n\nSub-commands (Verbs):\n\n\tcgl\t\tConfig Group List\n\t\t\tList machine groups defined in config file\n\n\trd\t\tResult Dump\n\t\t\tDump load test result, all machine counters\n\trdg\t\tResult Dump Group\n\t\t\tDump load test results, for the machine group\n\n\trbg\t\tReBoot Group\n\t\t\tReboot the machine group'"`
+	Step      int  `goptions:"-s, --step, description='Number of record outputed after which indicator is shown\n\t\t\t\t'"`
+	NoClobber bool `goptions:"--nc, description='No clobber, do not overwrite existing files\n\t\t\t\tDefault: overwrite them\n'"`
+
+	Verbosity []bool        `goptions:"-v, --verbose, description='Be verbose'"`
+	Help      goptions.Help `goptions:"-h, --help, description='Show this help\n\nSub-commands (Verbs):\n\n\tcgl\t\tConfig Group List\n\t\t\tList machine groups defined in config file\n\n\trd\t\tResult Dump\n\t\t\tDump load test result, standalone\n\trdg\t\tResult Dump Group\n\t\t\tDump load test results, for the machine group\n\n\trbg\t\tReBoot Group\n\t\t\tReboot the machine group'"`
 
 	goptions.Verbs
 
-	cgl struct{} `goptions:"cgl"`
+	Cgl struct{} `goptions:"cgl"`
 
-	rd  struct{} `goptions:"rd"`
-	rdg struct{} `goptions:"rdg"`
+	Rd struct {
+		Id                int    `goptions:"-n, --id, obligatory, description='Loadtest RunId'"`
+		PathOut           string `goptions:"-p, --path, obligatory, description='Path to where dumps are saved'"`
+		MachineNameFilter string `goptions:"-m, --mfilter, description='machine name filter for exporting the counters\n\t\t\t\tDefault: export all machines\n'"`
+	} `goptions:"rd"`
+	Rdg struct{} `goptions:"rdg"`
 
-	rbg struct{} `goptions:"rbg"`
+	Rbg struct{} `goptions:"rbg"`
 }
 
 var options = Options{ // Default values goes here
 	ConfigExt: ".conf",
 	Server:    "(local)",
 	PerfDb:    "LoadTest2010",
+	Step:      50,
 }
 
 type Command func(Options) error
 
 var commands = map[goptions.Verbs]Command{
 	"cgl": cmd_cgl,
+	"rd":  cmd_rd,
 }
 
 var (
