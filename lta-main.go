@@ -9,7 +9,10 @@
 
 package main
 
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
 import "github.com/voxelbrain/goptions"
 
@@ -18,6 +21,13 @@ func check(e error) {
 		panic(e)
 	}
 }
+
+////////////////////////////////////////////////////////////////////////////
+// Configuration variables definitions
+
+var progname = "lta"
+var progdesc = " - load test assistant program"
+var buildTime = "2016-03-18"
 
 ////////////////////////////////////////////////////////////////////////////
 // Commandline option definitions
@@ -36,7 +46,7 @@ type Options struct {
 	NoClobber bool `goptions:"--nc, description='No clobber, do not overwrite existing files\n\t\t\t\tDefault: overwrite them\n'"`
 
 	Verbosity []bool        `goptions:"-v, --verbose, description='Be verbose'"`
-	Help      goptions.Help `goptions:"-h, --help, description='Show this help\n\nSub-commands (Verbs):\n\n\tcgl\t\tConfig Group List\n\t\t\tList machine groups defined in config file\n\n\trd\t\tResult Dump\n\t\t\tDump load test result, standalone\n\trdg\t\tResult Dump Group\n\t\t\tDump load test results, for the machine group\n\n\trbg\t\tReBoot Group\n\t\t\tReboot the machine group'"`
+	Help      goptions.Help `goptions:"-h, --help, description='Show this help\n\nSub-commands (Verbs):\n\n\tcgl\t\tConfig Group List\n\t\t\tList machine groups defined in config file\n\n\trd\t\tResult Dump\n\t\t\tDump load test result, standalone\n\n\trdg\t\tResult Dump Group\n\t\t\tDump load test results, for the machine group\n\n\trbg\t\tReBoot Group\n\t\t\tReboot the machine group'"`
 
 	goptions.Verbs
 
@@ -78,6 +88,7 @@ func main() {
 	//fmt.Printf("] %#v\r\n", options)
 
 	if len(options.Verbs) == 0 {
+		fmt.Printf("%s%s \n      built on %s\n\n", progname, progdesc, buildTime)
 		goptions.PrintHelp()
 		os.Exit(2)
 	}

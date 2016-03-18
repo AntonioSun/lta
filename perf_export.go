@@ -21,14 +21,12 @@ import (
 	_ "github.com/alexbrainman/odbc"
 )
 
-var progname string = "lta:dump"
-
 /*
 PerfCounterExport will wxport performance counters collected from MS load
 test to .csv files for perfmon to view
 */
 func PerfCounterExport(options Options, ltRunId int, machineNameFilter string, pathOut string) {
-
+	progname += ":rd"
 	conn := getConnection(getConnectionString(options))
 	defer conn.Close()
 	log.Printf("[%s] Program started\n", progname)
