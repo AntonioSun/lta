@@ -46,11 +46,13 @@ type Options struct {
 	NoClobber bool `goptions:"--nc, description='No clobber, do not overwrite existing files\n\t\t\t\tDefault: overwrite them\n'"`
 
 	Verbosity []bool        `goptions:"-v, --verbose, description='Be verbose'"`
-	Help      goptions.Help `goptions:"-h, --help, description='Show this help\n\nSub-commands (Verbs):\n\n\tcgl\t\tConfig Group List\n\t\t\tList machine groups defined in config file\n\n\trd\t\tResult Dump\n\t\t\tDump load test result, standalone\n\n\trdg\t\tResult Dump Group\n\t\t\tDump load test results, for the machine group\n\n\trbg\t\tReBoot Group\n\t\t\tReboot the machine group'"`
+	Help      goptions.Help `goptions:"-h, --help, description='Show this help\n\nSub-commands (Verbs):\n\n\tcgl\t\tConfig Group List\n\t\t\tList machine groups defined in config file\n\n\tcgr\t\tConfig Group Report\n\t\t\tReport machines by groups from config file as Confluence Wiki\n\n\trd\t\tResult Dump\n\t\t\tDump load test result, standalone\n\n\trdg\t\tResult Dump Group\n\t\t\tDump load test results, for the machine group\n\n\trbg\t\tReBoot Group\n\t\t\tReboot the machine group'"`
 
 	goptions.Verbs
 
 	Cgl struct{} `goptions:"cgl"`
+
+	Cgr struct{} `goptions:"cgr"`
 
 	Rd struct {
 		Id                int    `goptions:"-n, --id, obligatory, description='Loadtest RunId'"`
@@ -73,6 +75,7 @@ type Command func(Options) error
 
 var commands = map[goptions.Verbs]Command{
 	"cgl": cglCmd,
+	"cgr": cgrCmd,
 	"rd":  rdCmd,
 }
 
