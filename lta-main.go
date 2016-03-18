@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////
 // Porgram: lta-main - load test assistant, main
 // Purpose: load test assistant kit
-// authors: Antonio Sun (c) 2015, All rights reserved
+// authors: Antonio Sun (c) 2015-16, All rights reserved
 // Credits: https://github.com/voxelbrain/goptions/tree/master/examples
 //
 //
@@ -72,8 +72,8 @@ var options = Options{ // Default values goes here
 type Command func(Options) error
 
 var commands = map[goptions.Verbs]Command{
-	"cgl": cmd_cgl,
-	"rd":  cmd_rd,
+	"cgl": cglCmd,
+	"rd":  rdCmd,
 }
 
 var (
