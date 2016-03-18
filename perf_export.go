@@ -7,6 +7,8 @@
 
 // Translated to GO from C#, http://blogs.msdn.com/b/geoffgr/archive/2013/09/09/
 
+// +build windows
+
 package main
 
 import (
