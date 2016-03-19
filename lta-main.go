@@ -46,7 +46,7 @@ type Options struct {
 	NoClobber bool `goptions:"--nc, description='No clobber, do not overwrite existing files\n\t\t\t\tDefault: overwrite them\n'"`
 
 	Verbosity []bool        `goptions:"-v, --verbose, description='Be verbose'"`
-	Help      goptions.Help `goptions:"-h, --help, description='Show this help\n\nSub-commands (Verbs):\n\n\tcgl\t\tConfig Group List\n\t\t\tList machine groups defined in config file\n\n\tcgr\t\tConfig Group Report\n\t\t\tReport machines by groups from config file as Confluence Wiki\n\n\trd\t\tResult Dump\n\t\t\tDump load test result, standalone\n\n\trdg\t\tResult Dump Group\n\t\t\tDump load test results, for the machine group\n\n\trbg\t\tReBoot Group\n\t\t\tReboot the machine group'"`
+	Help      goptions.Help `goptions:"-h, --help, description='Show this help\n\nSub-commands (Verbs):\n\n\tcgl\t\tConfig Group List\n\t\t\tList machine groups defined in config file\n\n\tcgr\t\tConfig Group Report\n\t\t\tReport machines by groups from config file as Confluence Wiki\n\n\trd\t\tResult Dump\n\t\t\tDump load test result\n\n\tdump\t\tDump\n\t\t\tDump loadtest file\n\n\treboot\t\tReboot instance\n\t\t\tReboot the machines defined as the instance in config file'"`
 
 	goptions.Verbs
 
@@ -59,9 +59,15 @@ type Options struct {
 		PathOut           string `goptions:"-p, --path, obligatory, description='Path to where dumps are saved'"`
 		MachineNameFilter string `goptions:"-m, --mfilter, description='machine name filter for exporting the counters\n\t\t\t\tDefault: export all machines\n'"`
 	} `goptions:"rd"`
-	Rdg struct{} `goptions:"rdg"`
 
-	Rbg struct{} `goptions:"rbg"`
+	Dump struct {
+		Filei *os.File `goptions:"-i, --input, obligatory, description='The loadtest file to dump', rdonly"`
+		Fileo *os.File `goptions:"-o, --output, description='The loadtest dump output (default: .loadtext file of input)', wronly"`
+	} `goptions:"dump"`
+
+	Reboot struct {
+		NoDb bool `goptions:"--nodb, description='\tReboot all machines except the DB server'"`
+	} `goptions:"reboot"`
 }
 
 var options = Options{ // Default values goes here
@@ -74,9 +80,10 @@ var options = Options{ // Default values goes here
 type Command func(Options) error
 
 var commands = map[goptions.Verbs]Command{
-	"cgl": cglCmd,
-	"cgr": cgrCmd,
-	"rd":  rdCmd,
+	"cgl":  cglCmd,
+	"cgr":  cgrCmd,
+	"rd":   rdCmd,
+	"dump": dumpCmd,
 }
 
 var (
