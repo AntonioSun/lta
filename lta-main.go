@@ -63,6 +63,7 @@ type Options struct {
 	Dump struct {
 		Filei *os.File `goptions:"-i, --input, obligatory, description='The loadtest file to dump', rdonly"`
 		Fileo *os.File `goptions:"-o, --output, description='The loadtest dump output (default: .loadtext file of input)', wronly"`
+		ID    bool     `goptions:"--id, description='\tDump loadtest ID as well'"`
 	} `goptions:"dump"`
 
 	Reboot struct {

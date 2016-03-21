@@ -68,10 +68,13 @@ func treatLtXml(w io.Writer, decoder *xml.Decoder) error {
 						r.Name, r.TestMixType, r.DelayStartTime, r.DelayBetweenIterations,
 						r.MaxTestIterations, r.PercentNewUsers)
 					for _, av := range r.TestMix.TestProfile {
-						//fmt.Fprintf(w, "  TP: %s at %s%%.\tId=%s\r\n",
-						//	av.Name, av.Percentage, av.Id)
-						fmt.Fprintf(w, "  TP: %s\tat %s%%\r\n",
-							av.Name, av.Percentage)
+						if options.Dump.ID {
+							fmt.Fprintf(w, "  TP: %s at %s%%.\tId=%s\r\n",
+								av.Name, av.Percentage, av.Id)
+						} else {
+							fmt.Fprintf(w, "  TP: %s\tat %s%%\r\n",
+								av.Name, av.Percentage)
+						}
 					}
 					r.LoadProfile.XMLName = xml.Name{}
 					fmt.Fprintf(w, "  LP: %+v\r\n", r.LoadProfile)
