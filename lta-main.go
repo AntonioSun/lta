@@ -63,11 +63,12 @@ type Options struct {
 	Dump struct {
 		Filei *os.File `goptions:"-i, --input, obligatory, description='The loadtest file to dump', rdonly"`
 		Fileo *os.File `goptions:"-o, --output, description='The loadtest dump output (default: .loadtext file of input)', wronly"`
-		ID    bool     `goptions:"--id, description='\tDump loadtest ID as well'"`
+		ID    bool     `goptions:"--id, description='Dump loadtest ID as well'"`
 	} `goptions:"dump"`
 
 	Reboot struct {
-		NoDb bool `goptions:"--nodb, description='\tReboot all machines except the DB server'"`
+		Instance string `goptions:"-i, --instance, obligatory, description='\tInstance to reboot the machines'"`
+		NoDb     bool   `goptions:"--nodb, description='\tReboot all machines except the DB server'"`
 	} `goptions:"reboot"`
 }
 
@@ -81,10 +82,14 @@ var options = Options{ // Default values goes here
 type Command func(Options) error
 
 var commands = map[goptions.Verbs]Command{
-	"cgl":  cglCmd,
-	"cgr":  cgrCmd,
-	"rd":   rdCmd,
-	"dump": dumpCmd,
+	// short name group
+	"cgl": cglCmd,
+	"cgr": cgrCmd,
+	"rd":  rdCmd,
+	// long name group
+	"dump":   dumpCmd,
+	"reboot": rebootCmd,
+	//"": Cmd,
 }
 
 var (
