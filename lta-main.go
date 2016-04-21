@@ -46,11 +46,13 @@ type Options struct {
 	NoClobber bool `goptions:"--nc, description='No clobber, do not overwrite existing files\n\t\t\t\tDefault: overwrite them\n'"`
 
 	Verbosity []bool        `goptions:"-v, --verbose, description='Be verbose'"`
-	Help      goptions.Help `goptions:"-h, --help, description='Show this help\n\nSub-commands (Verbs):\n\n\tcgl\t\tConfig Group List\n\t\t\tList machine groups defined in config file\n\n\tcgr\t\tConfig Group Report\n\t\t\tReport machines by groups from config file as Confluence Wiki\n\n\trd\t\tResult Dump\n\t\t\tDump load test result\n\n\tdump\t\tDump\n\t\t\tDump loadtest file\n\n\treboot\t\tReboot instance\n\t\t\tReboot the machines defined as the instance in config file'"`
+	Help      goptions.Help `goptions:"-h, --help, description='Show this help\n\nSub-commands (Verbs):\n\n\tcgl\t\tConfig Group List\n\t\t\tList machine groups defined in config file\n\n\tcgb\t\tConfig Group Briefing\n\t\t\tBrief list major info of machine groups from config file\n\n\tcgr\t\tConfig Group Report\n\t\t\tReport machines by groups from config file as Confluence Wiki\n\n\trd\t\tResult Dump\n\t\t\tDump load test result\n\n\tdump\t\tDump\n\t\t\tDump loadtest file\n\n\treboot\t\tReboot instance\n\t\t\tReboot the machines defined as the instance in config file'"`
 
 	goptions.Verbs
 
 	Cgl struct{} `goptions:"cgl"`
+
+	Cgb struct{} `goptions:"cgb"`
 
 	Cgr struct{} `goptions:"cgr"`
 
@@ -84,6 +86,7 @@ type Command func(Options) error
 var commands = map[goptions.Verbs]Command{
 	// short name group
 	"cgl": cglCmd,
+	"cgb": cgbCmd,
 	"cgr": cgrCmd,
 	"rd":  rdCmd,
 	// long name group
